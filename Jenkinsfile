@@ -1,6 +1,8 @@
 pipeline {
     agent any
     environment {
+        // Baris ini agar Jenkins langsung menemukan file docker.exe di Windows
+        PATH = "C:\\Program Files\\Docker\\Docker\\resources\\bin;${env.PATH}"
         IMAGE_NAME = 'vincent772/simple-app'
         REGISTRY_CREDENTIALS = 'dockerhub-credentials'
     }
