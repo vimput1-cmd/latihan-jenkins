@@ -1,8 +1,6 @@
 pipeline {
     agent any
     environment {
-        // Path asli Docker di laptop Anda
-        PATH = "C:\\Users\\AXI00\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin;${env.PATH}"
         IMAGE_NAME = 'vincent772/simple-app'
         REGISTRY_CREDENTIALS = 'dockerhub-credentials'
     }
@@ -19,17 +17,27 @@ pipeline {
         }
         stage('Build Docker Image') {
             steps { 
-                bat "docker build -t %IMAGE_NAME%:%BUILD_NUMBER% ." 
+                bat '''
+                    @echo off
+                    set "PATH=C:\\Users\\AXI00\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin;%PATH%"
+                    set "DOCKER_HOST=tcp://localhost:2375"
+                    docker build -t %IMAGE_NAME%:%BUILD_NUMBER% .
+                '''
             }
         }
         stage('Push Docker Image') {
             steps {
                 withCredentials([usernamePassword(credentialsId: REGISTRY_CREDENTIALS,
                 usernameVariable: 'USER', passwordVariable: 'PASS')]) {
-                    bat 'docker login -u %USER% -p %PASS%'
-                    bat "docker push %IMAGE_NAME%:%BUILD_NUMBER%"
-                    bat "docker tag %IMAGE_NAME%:%BUILD_NUMBER% %IMAGE_NAME%:latest"
-                    bat "docker push %IMAGE_NAME%:latest"
+                    bat '''
+                        @echo off
+                        set "PATH=C:\\Users\\AXI00\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin;%PATH%"
+                        set "DOCKER_HOST=tcp://localhost:2375"
+                        docker login -u %USER% -p %PASS%
+                        docker push %IMAGE_NAME%:%BUILD_NUMBER%
+                        docker tag %IMAGE_NAME%:%BUILD_NUMBER% %IMAGE_NAME%:latest
+                        docker push %IMAGE_NAME%:latest
+                    '''
                 }
             }
         }
