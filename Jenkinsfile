@@ -19,7 +19,7 @@ pipeline {
             steps { 
                 bat '''
                     @echo off
-                    set "PATH=C:\\Users\\AXI00\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin;%PATH%"
+                    set "PATH=C:\\Docker;%PATH%"
                     set "DOCKER_HOST=tcp://localhost:2375"
                     docker build -t %IMAGE_NAME%:%BUILD_NUMBER% .
                 '''
@@ -31,7 +31,7 @@ pipeline {
                 usernameVariable: 'USER', passwordVariable: 'PASS')]) {
                     bat '''
                         @echo off
-                        set "PATH=C:\\Users\\AXI00\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin;%PATH%"
+                        set "PATH=C:\\Docker;%PATH%"
                         set "DOCKER_HOST=tcp://localhost:2375"
                         docker login -u %USER% -p %PASS%
                         docker push %IMAGE_NAME%:%BUILD_NUMBER%
